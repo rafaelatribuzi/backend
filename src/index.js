@@ -1,11 +1,15 @@
-import express from "express"; //lembrar de instalar o express - npm i express
+import express, { request } from "express"; //lembrar de instalar o express - npm i express
 
 import cors from "cors"; //lembrar de instalar o express - npm i cors
 import { piadas } from "./mock.js";
-piadas
+import { connectToMongo } from "./database/index.js";
+import User from "./database/schema/user.js";
+import { userRouter } from "./router.js";
+userRouter
 
 
 const app = express();
+connectToMongo();
 
 app.use(
   cors({
@@ -23,10 +27,14 @@ app.get("/batata", (req, res)=> {
   res.status(200).send({batata: true});
 });
 
+
+
 app.get("/piadas", (req, res)=> {
   const randomNum = getRandomInt(piadas.length);
   return res.status(200).send({piada: piadas[randomNum]});
 });
+
+app.use("/user", userRouter);
 
 app.listen("3000");
 
